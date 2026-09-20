@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{{ project.name }}</h1>
+  <p>{{ project.description }}</p>
+  <div class="actions">
+    <a href="/projects/{{ project.id }}/edit">edit</a>
+    <a href="/tasks/new?project_id={{ project.id }}">add task</a>
+    <form method="post" action="/projects/{{ project.id }}/delete" class="inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="link danger">delete project</button>
+    </form>
+    <a href="/">back to board</a>
+  </div>
+</div>
+
+<div class="toolbar">
+  <form method="get" action="/projects/{{ project.id }}" class="filters">
+    <input type="search" name="q" placeholder="Search tasks…" value="{{ q }}" aria-label="Search">
+    <select name="status" aria-label="Status">
+      <option value="">All statuses</option>
+      {% for s in statuses %}
+      <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+    {% if q or status %}<a class="clear" href="/projects/{{ project.id }}">clear</a>{% endif %}
+  </form>
+</div>
+
+{% include "_task_list.html" %}
+{% endblock %}

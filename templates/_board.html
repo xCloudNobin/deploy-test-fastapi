@@ -1,0 +1,52 @@
+<div class="toolbar">
+  <form method="get" action="/" class="filters">
+    <input type="search" name="q" placeholder="Search title or description…" value="{{ q }}" aria-label="Search">
+    <select name="status" aria-label="Status">
+      <option value="">All statuses</option>
+      {% for s in statuses %}
+      <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+    {% if q or status %}<a class="clear" href="/">clear</a>{% endif %}
+  </form>
+</div>
+
+{% for project in projects %}
+<section class="project">
+  <div class="project-head">
+    <h2><a href="/projects/{{ project.id }}">{{ project.name }}</a></h2>
+    <span class="count">{{ counts.get(project.id, 0) }} task(s)</span>
+    <p class="desc">{{ project.description }}</p>
+    <div class="actions">
+      <a href="/projects/{{ project.id }}/edit">edit</a>
+      <a href="/tasks/new?project_id={{ project.id }}">add task</a>
+      <form method="post" action="/projects/{{ project.id }}/delete" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="link danger">delete</button>
+      </form>
+    </div>
+  </div>
+  {% if by_project.get(project.id) %}
+  {% set tasks = by_project.get(project.id) %}
+  {% include "_task_list.html" %}
+  {% else %}
+  <p class="empty">No tasks for this project.</p>
+  {% endif %}
+</section>
+{% endfor %}
+
+{% if unassigned %}
+<section class="project">
+  <div class="project-head">
+    <h2>Unassigned tasks</h2>
+    <span class="count">{{ unassigned|length }} task(s)</span>
+  </div>
+  {% set tasks = unassigned %}
+  {% include "_task_list.html" %}
+</section>
+{% endif %}
+
+{% if not projects and not unassigned %}
+<p class="empty">No projects yet — <a href="/projects/new">create one</a>.</p>
+{% endif %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{% if task %}Edit task{% else %}New task{% endif %}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{% if task %}Edit task{% else %}New task{% endif %}</h1>
+</div>
+
+<form method="post" action="{% if task %}/tasks/{{ task.id }}/edit{% else %}/tasks/new{% endif %}" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+  <label for="title">Title</label>
+  <input id="title" name="title" type="text" maxlength="200" value="{{ title }}" required>
+  {% if errors and errors.get('title') %}<span class="error">{{ errors['title'] }}</span>{% endif %}
+
+  <label for="description">Description</label>
+  <textarea id="description" name="description" maxlength="4000" rows="4">{{ description }}</textarea>
+
+  <label for="status">Status</label>
+  <select id="status" name="status">
+    {% for s in statuses %}
+    <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  {% if errors and errors.get('status') %}<span class="error">{{ errors['status'] }}</span>{% endif %}
+
+  <label for="project_id">Project</label>
+  <select id="project_id" name="project_id">
+    <option value="">No project (unassigned)</option>
+    {% for p in projects %}
+    <option value="{{ p.id }}" {% if p.id == selected_project_id %}selected{% endif %}>{{ p.name }}</option>
+    {% endfor %}
+  </select>
+  {% if errors and errors.get('project_id') %}<span class="error">{{ errors['project_id'] }}</span>{% endif %}
+
+  <div class="actions">
+    <button type="submit">{% if task %}Save{% else %}Create{% endif %}</button>
+    <a href="/">cancel</a>
+  </div>
+</form>
+{% endblock %}

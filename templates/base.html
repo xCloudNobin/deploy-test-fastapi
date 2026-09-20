@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Task Board{% endblock %} · deploy-test-fastapi</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/">Task Board</a>
+    <nav>
+      <a href="/">Board</a>
+      <a href="/tasks/new">New task</a>
+      <a href="/projects/new">New project</a>
+      <a href="/docs">API docs</a>
+    </nav>
+    <span class="build-marker" title="release marker">{{ build_marker }}</span>
+  </div>
+</header>
+
+<main class="container">
+  {% if flashes %}
+  <div class="flashes">
+    {% for f in flashes %}
+    <div class="flash {{ f.category }}">{{ f.message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <span>Task board</span>
+    <span>statuses: todo · in_progress · done</span>
+    <span class="build-marker">release <code>{{ build_marker }}</code></span>
+  </div>
+</footer>
+</body>
+</html>

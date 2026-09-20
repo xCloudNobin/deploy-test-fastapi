@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{% if project %}Edit project{% else %}New project{% endif %}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>{% if project %}Edit project{% else %}New project{% endif %}</h1>
+</div>
+
+<form method="post" action="{% if project %}/projects/{{ project.id }}/edit{% else %}/projects/new{% endif %}" class="form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  {% if name is not defined %}{% set name = project.name if project else "" %}{% endif %}
+  {% if description is not defined %}{% set description = project.description if project else "" %}{% endif %}
+
+  <label for="name">Name</label>
+  <input id="name" name="name" type="text" maxlength="120" value="{{ name }}" required>
+  {% if errors and errors.get('name') %}<span class="error">{{ errors['name'] }}</span>{% endif %}
+
+  <label for="description">Description</label>
+  <textarea id="description" name="description" maxlength="2000" rows="4">{{ description }}</textarea>
+
+  <div class="actions">
+    <button type="submit">{% if project %}Save{% else %}Create{% endif %}</button>
+    <a href="/">cancel</a>
+  </div>
+</form>
+{% endblock %}

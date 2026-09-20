@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} {{ title }}{% endblock %}
+{% block content %}
+<div class="error-panel">
+  <h1>{{ code }}</h1>
+  <h2>{{ title }}</h2>
+  <p>{{ message }}</p>
+  <p><a href="/">back to board</a></p>
+</div>
+{% endblock %}

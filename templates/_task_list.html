@@ -1,0 +1,29 @@
+<ul class="task-list">
+  {% for task in tasks %}
+  <li class="task">
+    <div class="task-main">
+      <h3>{{ task.title }}</h3>
+      {% if task.description %}<p class="desc">{{ task.description }}</p>{% endif %}
+      <span class="badge status-{{ task.status }}">{{ task.status }}</span>
+    </div>
+    <div class="task-actions">
+      <form method="post" action="/tasks/{{ task.id }}/status" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <select name="status" onchange="this.form.submit()" aria-label="Change status">
+          {% for s in statuses %}
+          <option value="{{ s }}" {% if s == task.status %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+        <noscript><button type="submit">update</button></noscript>
+      </form>
+      <a href="/tasks/{{ task.id }}/edit">edit</a>
+      <form method="post" action="/tasks/{{ task.id }}/delete" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="link danger">delete</button>
+      </form>
+    </div>
+  </li>
+  {% else %}
+  <li class="empty">No tasks match.</li>
+  {% endfor %}
+</ul>
